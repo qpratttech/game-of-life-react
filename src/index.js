@@ -47,17 +47,23 @@ class Square extends React.Component {
 
   getColorParts(neighbors) {
     let colorParts = [];
+    let colors = this.getParentColors(neighbors);
+    colorParts.push(colors[0].substr(1,2));
+    colorParts.push(colors[1].substr(3,2));
+    colorParts.push(colors[2].substr(5,2));
+    return colorParts;
+  }
+
+  getParentColors(neighbors) {
+    let colors = [];
     let dead = "#ffffff";
     if (this.liveNeighbors(neighbors) == 3) {
       for (let key in neighbors) {
         if (this.neighborIsAlive(neighbors[key])) {
-          colorParts.push(neighbors[key].value);
+          colors.push(neighbors[key].value);
         }
     }
-  }
-
-  getThreeParents(neighbors) {
-
+    return colors;
   }
 
   getNeighbors() {
