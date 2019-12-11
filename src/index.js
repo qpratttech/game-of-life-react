@@ -7,14 +7,15 @@ class Square extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      color: "#ffffff"
+      color: "#ffffff",
+      opacity: 0.1
     };
 
     this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
-    this.timerID = setInterval(() => this.tick(), 100);
+    this.timerID = setInterval(() => this.tick(), 21000);
   }
 
   componentWillUnmount() {
@@ -22,13 +23,9 @@ class Square extends React.Component {
   }
 
   nextGeneration() {
-    console.log(
-      "Cell y"
-        .concat(this.props.y)
-        .concat(" x")
-        .concat(this.props.x)
-        .concat(" has survived.")
-    );
+    let opacity = this.state.opacity;
+    opacity = opacity < 1 ? opacity + 0.1 : 1;
+    this.setState({ opacity: opacity });
   }
 
   killCell() {
@@ -39,8 +36,8 @@ class Square extends React.Component {
     return this.state.color != "#ffffff";
   }
 
-  reprodution(neighbors) {
-    if (this.color == "#ffffff") {
+  reproduction(neighbors) {
+    if (this.state.color == "#ffffff") {
       this.setState({ color: this.combineColors(neighbors) });
     }
   }
@@ -49,7 +46,10 @@ class Square extends React.Component {
     // colorParts is an array that contains 3 indexes: index 0 is R from the leftmost parent,
     // index 1 is the G value from the next parent, and index 2 is the B value from the third parent.
     let colorParts = this.getColorParts(neighbors);
-    return "#".concat.colorParts[0].concat(colorParts[1]).concat(colorParts[2]);
+    return "#"
+      .concat(colorParts[0])
+      .concat(colorParts[1])
+      .concat(colorParts[2]);
   }
 
   getColorParts(neighbors) {
@@ -63,7 +63,6 @@ class Square extends React.Component {
 
   getParentColors(neighbors) {
     let colors = [];
-    let dead = "#ffffff";
     if (this.liveNeighbors(neighbors) == 3) {
       for (let key in neighbors) {
         if (this.neighborIsAlive(neighbors[key])) {
@@ -115,7 +114,7 @@ class Square extends React.Component {
     if (liveNeighbors < 2) {
       this.killCell(); //under-population
     } else if (liveNeighbors <= 3) {
-      if (this.isAlive) {
+      if (this.isAlive()) {
         this.nextGeneration();
       } else if (liveNeighbors == 3) {
         this.reproduction(neighbors);
@@ -137,6 +136,7 @@ class Square extends React.Component {
       <input
         className={className}
         type="color"
+        style={{ opacity: this.state.opacity }}
         value={this.state.color}
         onChange={this.handleChange}
       />
