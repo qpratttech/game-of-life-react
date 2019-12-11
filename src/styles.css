@@ -1,0 +1,39 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+body {
+  font: 14px "Century Gothic", Futura, sans-serif;
+  
+}
+
+.square {
+  background: #ffffff;
+  border: 1px solid #333;
+  float: left;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 34px;
+  text-align: center;
+  width: 34px;
+  padding: 0px;
+}
+
+.square:focus {
+  outline: none;
+}
+
+.game {
+  display: flex;
+  flex-direction: row;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+	border: none;
+}
+
