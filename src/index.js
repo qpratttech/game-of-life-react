@@ -24,9 +24,13 @@ class Square extends React.Component {
     clearInterval(this.timerID);
   }
 
-  underPopulation()
-  nextGeneration()
-  overCrowded()
+  nextGeneration() {
+    console.log("Cell y".concat(this.props.y).concat(" x").concat(this.props.x).concat(" has survived."));
+  }
+  
+  killCell() {
+    this.setState({color: "#ffffff"});
+  }
 
   isAlive() {
     return this.state.color != "#ffffff";
@@ -104,7 +108,7 @@ class Square extends React.Component {
     let neighbors = this.getNeighbors();
     let liveNeighbors = this.liveNeihbors(neighbors);
     if (liveNeighbors < 2) {
-      this.underPopulation();
+      this.killCell(); //under-population
     } else if (liveNeighbors <= 3) {
       if (this.isAlive) {
         this.nextGeneration();
@@ -112,7 +116,7 @@ class Square extends React.Component {
         this.reproduction(neighbors);
       }
     } else {
-      this.overCrowded();
+      this.killCell(); //overcrowded
     }
   }
 */
