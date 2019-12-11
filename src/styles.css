@@ -16,18 +16,6 @@ button {
   margin: 1px;
 }
 
-.startButton {
-  background-color: rgb(111, 255, 111);
-}
-
-.pauseButton {
-  background-color: rgb(231, 111, 255);
-}
-
-.clearButton {
-  background-color: rgb(148, 221, 255);
-}
-
 .square {
   background: #ffffff;
   border: 1px solid #333;

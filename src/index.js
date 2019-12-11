@@ -15,7 +15,7 @@ class Square extends React.Component {
   }
 
   componentDidMount() {
-    this.timerID = setInterval(() => this.tick(), 21000);
+    this.timerID = setInterval(() => this.tick(), this.props.interval);
   }
 
   componentWillUnmount() {
@@ -144,12 +144,6 @@ class Square extends React.Component {
   }
 }
 
-class StartButton extends React.Component {
-  render() {
-    return <button className="startButton">Start</button>;
-  }
-}
-
 class PauseButton extends React.Component {
   render() {
     return <button className="pauseButton">Pause</button>;
@@ -163,12 +157,32 @@ class ClearButton extends React.Component {
 }
 
 class Board extends React.Component {
-  renderSquare(y, x) {
-    return <Square y={y} x={x} />;
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      start: false
+    };
+
+    this.handleStart = this.handleStart.bind(this);
+  }
+
+  handleStart() {
+    this.setState({ start: true });
+  }
+
+  renderSquare(y, x, start, interval, clear) {
+    return (
+      <Square y={y} x={x} start={start} interval={interval} clear={clear} />
+    );
   }
 
   renderStartButton() {
-    return <StartButton />;
+    return (
+      <button className="startButton" onClick={this.handleStart}>
+        Start
+      </button>
+    );
   }
 
   renderPauseButton() {
@@ -179,26 +193,21 @@ class Board extends React.Component {
     return <ClearButton />;
   }
 
-  renderBoard() {
+  render() {
     let rows = [];
+    let start = this.state.start;
     rows.push(this.renderStartButton());
     rows.push(this.renderPauseButton());
     rows.push(this.renderClearButton());
     rows.push(<br />);
     rows.push(<br />);
-    for (let y = 1; y <= 15; y++) {
-      for (let x = 1; x <= 15; x++) {
-        rows.push(this.renderSquare(y, x));
+    for (let y = 1; y <= 50; y++) {
+      for (let x = 1; x <= 50; x++) {
+        rows.push(this.renderSquare(y, x, start));
       }
       rows.push(<br />);
     }
     return rows;
-  }
-
-  board = this.renderBoard();
-
-  render() {
-    return this.board;
   }
 }
 
@@ -208,10 +217,6 @@ class Game extends React.Component {
       <div className="game">
         <div className="game-board">
           <Board />
-        </div>
-        <div className="game-info">
-          <div>{/* status */}</div>
-          <ol>{/* TODO */}</ol>
         </div>
       </div>
     );
