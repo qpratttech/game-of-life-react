@@ -109,18 +109,20 @@ class Square extends React.Component {
   }
 
   tick() {
-    let neighbors = this.getNeighbors();
-    let liveNeighbors = this.liveNeighbors(neighbors);
-    if (liveNeighbors < 2) {
-      this.killCell(); //under-population
-    } else if (liveNeighbors <= 3) {
-      if (this.isAlive()) {
-        this.nextGeneration();
-      } else if (liveNeighbors == 3) {
-        this.reproduction(neighbors);
+    if (this.props.start) {
+      let neighbors = this.getNeighbors();
+      let liveNeighbors = this.liveNeighbors(neighbors);
+      if (liveNeighbors < 2) {
+        this.killCell(); //under-population
+      } else if (liveNeighbors <= 3) {
+        if (this.isAlive()) {
+          this.nextGeneration();
+        } else if (liveNeighbors == 3) {
+          this.reproduction(neighbors);
+        }
+      } else {
+        this.killCell(); //overcrowded
       }
-    } else {
-      this.killCell(); //overcrowded
     }
   }
 
@@ -144,12 +146,6 @@ class Square extends React.Component {
   }
 }
 
-class PauseButton extends React.Component {
-  render() {
-    return <button className="pauseButton">Pause</button>;
-  }
-}
-
 class ClearButton extends React.Component {
   render() {
     return <button className="clearButton">Clear</button>;
@@ -161,14 +157,20 @@ class Board extends React.Component {
     super(props);
 
     this.state = {
-      start: false
+      start: false,
+      interval: 500
     };
 
     this.handleStart = this.handleStart.bind(this);
+    this.handlePause = this.handlePause.bind(this);
   }
 
   handleStart() {
     this.setState({ start: true });
+  }
+
+  handlePause() {
+    this.setState({ start: false });
   }
 
   renderSquare(y, x, start, interval, clear) {
@@ -186,7 +188,11 @@ class Board extends React.Component {
   }
 
   renderPauseButton() {
-    return <PauseButton />;
+    return (
+      <button className="pauseButton" onClick={this.handlePause}>
+        Pause
+      </button>
+    );
   }
 
   renderClearButton() {
@@ -196,6 +202,7 @@ class Board extends React.Component {
   render() {
     let rows = [];
     let start = this.state.start;
+    let interval = this.state.interval;
     rows.push(this.renderStartButton());
     rows.push(this.renderPauseButton());
     rows.push(this.renderClearButton());
@@ -203,7 +210,7 @@ class Board extends React.Component {
     rows.push(<br />);
     for (let y = 1; y <= 50; y++) {
       for (let x = 1; x <= 50; x++) {
-        rows.push(this.renderSquare(y, x, start));
+        rows.push(this.renderSquare(y, x, start, interval));
       }
       rows.push(<br />);
     }
