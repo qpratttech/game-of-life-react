@@ -144,13 +144,48 @@ class Square extends React.Component {
   }
 }
 
+class StartButton extends React.Component {
+  render() {
+    return <button className="startButton">Start</button>;
+  }
+}
+
+class PauseButton extends React.Component {
+  render() {
+    return <button className="pauseButton">Pause</button>;
+  }
+}
+
+class ClearButton extends React.Component {
+  render() {
+    return <button className="clearButton">Clear</button>;
+  }
+}
+
 class Board extends React.Component {
   renderSquare(y, x) {
     return <Square y={y} x={x} />;
   }
 
+  renderStartButton() {
+    return <StartButton />;
+  }
+
+  renderPauseButton() {
+    return <PauseButton />;
+  }
+
+  renderClearButton() {
+    return <ClearButton />;
+  }
+
   renderBoard() {
     let rows = [];
+    rows.push(this.renderStartButton());
+    rows.push(this.renderPauseButton());
+    rows.push(this.renderClearButton());
+    rows.push(<br />);
+    rows.push(<br />);
     for (let y = 1; y <= 15; y++) {
       for (let x = 1; x <= 15; x++) {
         rows.push(this.renderSquare(y, x));

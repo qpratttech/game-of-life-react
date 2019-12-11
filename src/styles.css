@@ -5,7 +5,27 @@
 
 body {
   font: 14px "Century Gothic", Futura, sans-serif;
-  
+}
+
+button {
+  background: #ffffff;
+  border: 1px solid #333;
+  float: left;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 1px;
+}
+
+.startButton {
+  background-color: rgb(111, 255, 111);
+}
+
+.pauseButton {
+  background-color: rgb(231, 111, 255);
+}
+
+.clearButton {
+  background-color: rgb(148, 221, 255);
 }
 
 .square {
@@ -31,9 +51,8 @@ body {
 }
 
 input[type="color"]::-webkit-color-swatch-wrapper {
-	padding: 0;
+  padding: 0;
 }
 input[type="color"]::-webkit-color-swatch {
-	border: none;
+  border: none;
 }
-
