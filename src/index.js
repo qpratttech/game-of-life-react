@@ -153,6 +153,7 @@ class Board extends React.Component {
     this.state = {
       start: false,
       interval: 1000,
+      speed: 1000,
       turn: 0,
       clear: false
     };
@@ -192,7 +193,10 @@ class Board extends React.Component {
   }
 
   handleSpeedChange(e) {
-    this.setState({ interval: e.target.value });
+    clearInterval(this.timerID);
+    this.setState({ interval: 2000 - e.target.value });
+    this.setState({ speed: e.target.value });
+    this.timerID = setInterval(() => this.tick(), this.state.interval);
   }
 
   renderSquare(y, x, turn, clear) {
@@ -229,8 +233,8 @@ class Board extends React.Component {
         <input
           type="range"
           min="0"
-          max="10000"
-          value={this.state.interval}
+          max="2000"
+          value={this.state.speed}
           className="slider"
           id="speedSlider"
           onChange={this.handleSpeedChange}
