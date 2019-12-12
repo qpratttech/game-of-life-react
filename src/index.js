@@ -12,14 +12,7 @@ class Square extends React.Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
-  }
-
-  componentDidMount() {
-    this.timerID = setInterval(() => this.tick(), this.props.interval);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timerID);
+    this.handleTurnChange = this.handleTurnChange.bind(this);
   }
 
   nextGeneration() {
@@ -108,21 +101,25 @@ class Square extends React.Component {
     return neighbor && neighbor.value != dead;
   }
 
-  tick() {
-    if (this.props.start) {
-      let neighbors = this.getNeighbors();
-      let liveNeighbors = this.liveNeighbors(neighbors);
-      if (liveNeighbors < 2) {
-        this.killCell(); //under-population
-      } else if (liveNeighbors <= 3) {
-        if (this.isAlive()) {
-          this.nextGeneration();
-        } else if (liveNeighbors == 3) {
-          this.reproduction(neighbors);
-        }
-      } else {
-        this.killCell(); //overcrowded
+  componentDidUpdate(prevProps) {
+    if (this.props.turn !== prevProps.turn) {
+      this.handleTurnChange();
+    }
+  }
+
+  handleTurnChange() {
+    let neighbors = this.getNeighbors();
+    let liveNeighbors = this.liveNeighbors(neighbors);
+    if (liveNeighbors < 2) {
+      this.killCell(); //under-population
+    } else if (liveNeighbors <= 3) {
+      if (this.isAlive()) {
+        this.nextGeneration();
+      } else if (liveNeighbors == 3) {
+        this.reproduction(neighbors);
       }
+    } else {
+      this.killCell(); //overcrowded
     }
   }
 
@@ -146,23 +143,33 @@ class Square extends React.Component {
   }
 }
 
-class ClearButton extends React.Component {
-  render() {
-    return <button className="clearButton">Clear</button>;
-  }
-}
-
 class Board extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       start: false,
-      interval: 500
+      interval: 500,
+      turn: 0
     };
 
     this.handleStart = this.handleStart.bind(this);
     this.handlePause = this.handlePause.bind(this);
+    this.tick = this.tick.bind(this);
+  }
+
+  componentDidMount() {
+    this.timerID = setInterval(() => this.tick(), this.state.interval);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  tick() {
+    if (this.state.start) {
+      this.setState({ turn: this.state.turn + 1 });
+    }
   }
 
   handleStart() {
@@ -173,10 +180,8 @@ class Board extends React.Component {
     this.setState({ start: false });
   }
 
-  renderSquare(y, x, start, interval, clear) {
-    return (
-      <Square y={y} x={x} start={start} interval={interval} clear={clear} />
-    );
+  renderSquare(y, x, turn, clear) {
+    return <Square y={y} x={x} turn={turn} clear={clear} />;
   }
 
   renderStartButton() {
@@ -196,21 +201,24 @@ class Board extends React.Component {
   }
 
   renderClearButton() {
-    return <ClearButton />;
+    return (
+      <button className="clearButton" onClick={this.handleClear}>
+        Clear
+      </button>
+    );
   }
 
   render() {
     let rows = [];
-    let start = this.state.start;
-    let interval = this.state.interval;
+    let turn = this.state.turn;
     rows.push(this.renderStartButton());
     rows.push(this.renderPauseButton());
     rows.push(this.renderClearButton());
     rows.push(<br />);
     rows.push(<br />);
-    for (let y = 1; y <= 50; y++) {
-      for (let x = 1; x <= 50; x++) {
-        rows.push(this.renderSquare(y, x, start, interval));
+    for (let y = 1; y <= 15; y++) {
+      for (let x = 1; x <= 15; x++) {
+        rows.push(this.renderSquare(y, x, turn));
       }
       rows.push(<br />);
     }
