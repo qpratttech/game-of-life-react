@@ -23,6 +23,7 @@ class Square extends React.Component {
 
   killCell() {
     this.setState({ color: "#ffffff" });
+    this.setState({ opacity: 0.1 });
   }
 
   isAlive() {
@@ -102,7 +103,9 @@ class Square extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.turn !== prevProps.turn) {
+    if (this.props.clear !== prevProps.clear && this.props.clear) {
+      this.killCell();
+    } else if (this.props.turn !== prevProps.turn) {
       this.handleTurnChange();
     }
   }
@@ -149,12 +152,15 @@ class Board extends React.Component {
 
     this.state = {
       start: false,
-      interval: 500,
-      turn: 0
+      interval: 1000,
+      turn: 0,
+      clear: false
     };
 
     this.handleStart = this.handleStart.bind(this);
     this.handlePause = this.handlePause.bind(this);
+    this.handleClear = this.handleClear.bind(this);
+    this.handleSpeedChange = this.handleSpeedChange.bind(this);
     this.tick = this.tick.bind(this);
   }
 
@@ -173,11 +179,20 @@ class Board extends React.Component {
   }
 
   handleStart() {
+    this.setState({ clear: false });
     this.setState({ start: true });
   }
 
   handlePause() {
     this.setState({ start: false });
+  }
+
+  handleClear() {
+    this.setState({ clear: true });
+  }
+
+  handleSpeedChange(e) {
+    this.setState({ interval: e.target.value });
   }
 
   renderSquare(y, x, turn, clear) {
@@ -208,17 +223,35 @@ class Board extends React.Component {
     );
   }
 
+  renderSpeedSlider() {
+    return (
+      <div className="slidecontainer">
+        <input
+          type="range"
+          min="0"
+          max="10000"
+          value={this.state.interval}
+          className="slider"
+          id="speedSlider"
+          onChange={this.handleSpeedChange}
+        />
+      </div>
+    );
+  }
+
   render() {
     let rows = [];
     let turn = this.state.turn;
+    let clear = this.state.clear;
     rows.push(this.renderStartButton());
     rows.push(this.renderPauseButton());
     rows.push(this.renderClearButton());
+    rows.push(this.renderSpeedSlider());
     rows.push(<br />);
     rows.push(<br />);
     for (let y = 1; y <= 15; y++) {
       for (let x = 1; x <= 15; x++) {
-        rows.push(this.renderSquare(y, x, turn));
+        rows.push(this.renderSquare(y, x, turn, clear));
       }
       rows.push(<br />);
     }
